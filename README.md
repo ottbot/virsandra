@@ -1,4 +1,4 @@
-# Virsandra
+# Virsandra [![Build Status](https://travis-ci.org/ottbot/virsandra.png)](https://travis-ci.org/ottbot/virsandra) [![Code Climate](https://codeclimate.com/github/ottbot/virsandra.png)](https://codeclimate.com/github/ottbot/virsandra)
 
 The Cassandra backed models with Virtus gem with a stupid name.
 
