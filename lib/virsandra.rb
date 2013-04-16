@@ -1,5 +1,33 @@
+require "virtus"
+require "cassandra-cql/1.2"
+
+require "virsandra/configuration"
+require "virsandra/connection"
 require "virsandra/version"
 
 module Virsandra
-  # Your code goes here...
+
+  extend Configuration
+
+  class << self
+    extend Forwardable
+    def_delegator :connection, :execute
+
+    def connection
+      @connection = Connection.new(self) if dirty?
+      @connection
+    end
+
+    def dirty?
+      return true if @connection.nil?
+      @connection.options != self.to_hash
+    end
+
+    def disconnect!
+      if @connection && @connection.handle
+        @connection.disconnect!
+      end
+      @connection = nil
+    end
+  end
 end
