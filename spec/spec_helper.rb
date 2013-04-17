@@ -20,10 +20,12 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
+    Virsandra.reset!
     Virsandra.keyspace = TEST_KEYSPACE
   end
 
   config.after(:all) do
+    Virsandra.keyspace = 'system'
     Virsandra.execute("DROP KEYSPACE #{TEST_KEYSPACE}");
   end
   # Run specs in random order to surface order dependencies. If you find an
