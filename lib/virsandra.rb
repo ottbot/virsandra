@@ -4,6 +4,7 @@ require "cassandra-cql/1.2"
 require "virsandra/configuration"
 require "virsandra/connection"
 require "virsandra/version"
+require "virsandra/query"
 
 module Virsandra
 
