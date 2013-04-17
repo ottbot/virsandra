@@ -1,10 +1,12 @@
 require "virtus"
 require "cassandra-cql/1.2"
 
+require "virsandra/version"
 require "virsandra/configuration"
 require "virsandra/connection"
-require "virsandra/version"
 require "virsandra/query"
+require "virsandra/model_query"
+require "virsandra/model"
 
 module Virsandra
 
