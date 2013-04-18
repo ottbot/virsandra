@@ -7,9 +7,7 @@ module Virsandra
 
     def find_by_key
       return {} unless @model.valid?
-
       query = Query.select.from(@model.table).where(@model.key)
-      puts query.to_s
       query.fetch
     end
 

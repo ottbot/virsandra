@@ -40,7 +40,6 @@ describe Virsandra::Model do
     company.should_not be_valid
   end
 
-  context "finding an existing record" do
   it "is equivelent with the same model same attributes" do
     Company.new(id: id, name: 'x').should == Company.new(id: id, name: 'x')
   end
@@ -52,6 +51,8 @@ describe Virsandra::Model do
   it "is not equivelent to a different model" do
     Company.new(id: id, name: 'x').should_not == stub(attributes: {id: id, name: 'x'})
   end
+
+  describe "finding an existing record" do
     before do
       Virsandra.execute("INSERT INTO companies (id, score, name, founded) VALUES (#{id.to_guid}, 101, 'Funky', 1990)")
     end
@@ -75,6 +76,24 @@ describe Virsandra::Model do
       company = Company.load(attrs)
       company.attributes.should == attrs.merge(founded: 1990)
     end
+  end
 
+  describe "saving a model" do
+    before do
+      Virsandra.execute("USE virtest")
+      Virsandra.execute("TRUNCATE companies")
+    end
+
+    it "can be saved" do
+      company = Company.new(id: id, score: 101, name: "Job Place")
+      company.save
+      Company.find(company.key).should == company
+    end
+
+    it "doesn't save when invalid" do
+      company = Company.new(name: "Keyless Inc.")
+      Virsandra::ModelQuery.should_not_receive(:new)
+      company.save
+    end
   end
 end
