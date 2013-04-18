@@ -95,6 +95,11 @@ describe Virsandra::Query do
 
     query.add(:patents, :integer)
     query.to_s.should == "ALTER TABLE foo ADD patents integer"
+
+    expect {
+      Virsandra::Query.select.from(:foo).add(:funky)
+    }.to raise_error(Virsandra::InvalidQuery)
+
   end
 
   it "executes the query" do
