@@ -1,10 +1,7 @@
 module Virsandra
-  class Query
+  class InvalidQuery < Exception; end
 
-    class InvalidWhere < Exception; end
-    class InvalidValues < Exception; end
-    class InvalidAlterAdd < Exception; end
-    class TableNotDefined < Exception; end
+  class Query
 
     attr_reader :row
     attr_accessor :table, :statement
@@ -51,7 +48,6 @@ module Virsandra
 
     alias_method :into,  :from
     alias_method :table, :from
-
 
     def where(params)
       prep_clause!
@@ -121,24 +117,24 @@ module Virsandra
 
     def validate_where!
       unless [:select, :delete].include? @statement
-        raise InvalidWhere.new("Where clause not defined for #{@statement}")
+        raise InvalidQuery.new("Where clause not defined for #{@statement}")
       end
     end
 
     def validate_insert_values!
       unless [:insert].include? @statement
-        raise InvalidValues.new("Values clause not defined for #{@statement}")
+        raise InvalidQuery.new("Values clause not defined for #{@statement}")
       end
     end
 
     def validate_alter!
       unless [:alter].include? @statement
-        raise InvalidAlterAdd.new("Add clause not defined for #{@statement}")
+        raise InvalidQuery.new("Add clause not defined for #{@statement}")
       end
     end
 
     def validate_table!
-      raise TableNotDefined.new("You must set the table") unless @table
+      raise InvalidQuery.new("You must set the table") unless @table
     end
 
     def insert_params

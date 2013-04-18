@@ -71,7 +71,7 @@ describe Virsandra::Query do
 
     expect {
       Virsandra::Query.insert.into(:foo).where(id: 1)
-    }.to raise_error(Virsandra::Query::InvalidWhere)
+    }.to raise_error(Virsandra::InvalidQuery)
   end
 
   it "can add values to an insert statement" do
@@ -86,7 +86,7 @@ describe Virsandra::Query do
 
     expect {
       Virsandra::Query.select.from(:foo).values(id: 1)
-    }.to raise_error(Virsandra::Query::InvalidValues)
+    }.to raise_error(Virsandra::InvalidQuery)
   end
 
   it "alters the table" do
