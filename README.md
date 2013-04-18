@@ -11,6 +11,80 @@ The feature set will likely remain simple, the idea is to not block
 development of other projects while the implentation of CQL changes
 quickly.
 
+## Schema yourself
+
+At this stage, you're on your own in terms for schema management. The
+gem expects you have maintain table <=> model attribute mappings
+youself.
+
+## Example usage
+
+````ruby
+require 'virsandra'
+
+Virsandra.configure |c|
+  c.servers = "127.0.0.1:9160"
+  c.keyspace = "example_keyspace"
+end
+````
+
+To define a `Company` model backed by a table `companies` using a composite primary key of `name text, founder text`:
+````ruby
+class Company
+  include Virsandra::Model
+
+  attribute :name, String
+  attribute :founder, String
+  attribute :turnover, Fixnum
+  attribute :founded, Date
+
+  table :companies
+  key :name, :founder
+end
+````
+
+Create a company:
+````ruby
+company = Company.new(name: "Gooble",
+                      founder: "Larry Brin",
+                      turnover: 2000000,
+                      founded: 1884)
+company.save
+````
+
+Find the company by key:
+````ruby
+company = Company.find(name: "Gooble", founder: "Larry Brin")
+````
+
+Find or initialize a company. If there is a row with the same primary
+key, this will load missing attributes from cassandra and merge new
+ones.
+
+````ruby
+company = Company.load(name: "Gooble", founder: "Larry Brin", foundec: 2012)
+company.attributes
+#=> {name: "Gooble", founder: "Larry Brin", turnover: 2000000, founded: 2012}
+````
+
+Seach for companies:
+````ruby
+companies = Companies.all
+
+googbles = Companies.where(name: 'Gooble')
+
+company_names = Companies.all.map(&:name)
+````
+
+## TODO / Missing
+
+1. Support ALLOW FILTERING
+2. All to search Index
+3. Delete models
+4. Counters
+5. Schema creation / migration
+
+
 ## Contributing
 
 1. Fork it
