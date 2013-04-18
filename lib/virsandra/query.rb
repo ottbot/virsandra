@@ -56,7 +56,7 @@ module Virsandra
 
       clause = params.reduce([]) do |clause, key|
         if key[1]
-          key[1] =  prepare_cql_value(key[1])
+          key[1] =  CQLValue.convert(key[1])
           clause << key.join(' = ')
         end
       end
@@ -80,7 +80,7 @@ module Virsandra
       @query << "(#{column_names.join(', ')})"
       @query << "VALUES"
 
-      values = column_names.map {|col| prepare_cql_value(params[col])}
+      values = column_names.map {|col| CQLValue.convert(params[col])}
 
       @query << "(#{values.join(', ')})"
 
@@ -172,19 +172,5 @@ module Virsandra
       Hash[row_hash.map{|(k,v)| [k.to_sym,v]}]
     end
 
-    def prepare_cql_value(value)
-      case value
-      when Numeric
-        value
-      when SimpleUUID::UUID
-        value.to_guid
-      else
-        "'#{escaped_string(value)}'"
-      end
-    end
-
-    def escaped_string(str)
-      str.to_s.gsub(/'/,"''")
-    end
   end
 end
