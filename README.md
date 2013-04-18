@@ -1,4 +1,4 @@
-# Virsandra [![Build Status](https://travis-ci.org/ottbot/virsandra.png)](https://travis-ci.org/ottbot/virsandra) [![Code Climate](https://codeclimate.com/github/ottbot/virsandra.png)](https://codeclimate.com/github/ottbot/virsandra) [![Dependency Status](https://gemnasium.com/ottbot/virsandra.png)](https://gemnasium.com/ottbot/virsandra)
+# Virsandra [![Build Status](https://travis-ci.org/ottbot/virsandra.png)](https://travis-ci.org/ottbot/virsandra) [![Code Climate](https://codeclimate.com/github/ottbot/virsandra.png)](https://codeclimate.com/github/ottbot/virsandra) [![Dependency Status](https://gemnasium.com/ottbot/virsandra.png)](https://gemnasium.com/ottbot/virsandra) [![Coverage Status](https://coveralls.io/repos/ottbot/virsandra/badge.png?branch=master)](https://coveralls.io/r/ottbot/virsandra)
 
 The Cassandra backed models with Virtus gem with a stupid name.
 
