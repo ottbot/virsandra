@@ -41,6 +41,17 @@ describe Virsandra::Model do
   end
 
   context "finding an existing record" do
+  it "is equivelent with the same model same attributes" do
+    Company.new(id: id, name: 'x').should == Company.new(id: id, name: 'x')
+  end
+
+  it "is not equivelent with different attributes" do
+    Company.new(id: id, name: 'x').should_not == Company.new(id: id, name: 'y')
+  end
+
+  it "is not equivelent to a different model" do
+    Company.new(id: id, name: 'x').should_not == stub(attributes: {id: id, name: 'x'})
+  end
     before do
       Virsandra.execute("INSERT INTO companies (id, score, name, founded) VALUES (#{id.to_guid}, 101, 'Funky', 1990)")
     end

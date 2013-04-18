@@ -24,6 +24,9 @@ module Virsandra
       def valid?
         self.class.valid_key?(key)
       end
+      def ==(other)
+        other.is_a?(self.class) && attributes == other.attributes
+      end
     end
 
     module ClassMethods
