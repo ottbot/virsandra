@@ -137,16 +137,20 @@ module Virsandra
       raise InvalidQuery.new("You must set the table") unless @table
     end
 
-    def insert_params
-      @columns.to_a.reduce([[],[]]) do |params, column|
-        2.times {|i| params[i] << column[i] }
-        params
-      end.flatten
-    end
+    ## These method are not used temporarily!
+    ## the current CassandraCQL gem doesn't with
+    ## with placeholders on 1.2.2
 
-    def insert_place_holders
-      (['?'] * @columns.length).join(', ')
-    end
+    # def insert_params
+    #   @columns.to_a.reduce([[],[]]) do |params, column|
+    #     2.times {|i| params[i] << column[i] }
+    #     params
+    #   end.flatten
+    # end
+
+    # def insert_place_holders
+    #   (['?'] * @columns.length).join(', ')
+    # end
 
     def start_query
       case @statement
