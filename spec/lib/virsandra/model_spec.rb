@@ -96,4 +96,42 @@ describe Virsandra::Model do
       company.save
     end
   end
+
+  describe "working with existing records" do
+    before do
+      Virsandra.execute("USE virtest")
+      Virsandra.execute("TRUNCATE companies")
+
+      5.times { |n| Company.new(id: id, score: n + 1, name: "Test").save }
+      5.times { |n| Company.new(id: SimpleUUID::UUID.new, score: n + 1, name: "Test").save }
+    end
+
+    it "checks all search terms are attributes" do
+      expect { Company.where(id: 1, missing: 'key') }.to raise_error(ArgumentError)
+      expect { Company.where(id: id, score: 10) }.not_to raise_error(ArgumentError)
+    end
+
+    it "returns an enumerable" do
+      Company.where(id: id).should be_an Enumerator
+    end
+
+    it "creates an model instance for each entry " do
+      Company.where(id: id).map(&:score).should == [1,2,3,4,5]
+    end
+
+    it "can get all records" do
+      Company.all.to_a.length.should == 10
+    end
+
+    it "lazily instanciates models" do
+      Company.should_receive(:new).twice
+      Company.all.take(2)
+    end
+
+    it "can be empty" do
+      Company.where(id: id, score: 1009).to_a.should be_empty
+    end
+
+  end
+
 end

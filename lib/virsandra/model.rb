@@ -62,6 +62,20 @@ module Virsandra
         return false if columns.length != key.length
         key.all? {|k| !columns[k].nil? }
       end
+
+      def attribute_names
+        attribute_set.map(&:name)
+      end
+
+      alias_method :column_names, :attribute_names
+
+      def all
+        where({})
+      end
+
+      def where(params)
+        ModelQuery.new(self).where(params)
+      end
     end
 
   end
