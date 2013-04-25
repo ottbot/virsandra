@@ -18,33 +18,31 @@ describe Virsandra::Model do
 
   let(:id) { SimpleUUID::UUID.new }
 
-  describe "assigning a uuid to id" do
-    let(:company) { Company.new(id: id, name: "Testco", score: 78)}
+  let(:company) { Company.new(id: id, name: "Testco", score: 78)}
 
-    it "has attributes" do
-      company.attributes.should be_a Hash
-    end
+  it "has attributes" do
+    company.attributes.should be_a Hash
+  end
 
-    it "selects keys" do
-      company.key.should == {id: id, score: 78}
-    end
+  it "selects keys" do
+    company.key.should == {id: id, score: 78}
+  end
 
-    it "reads the configured table" do
-      company.table.should == :companies
-    end
+  it "reads the configured table" do
+    company.table.should == :companies
+  end
 
-    it "is valid with a key" do
-      company.should be_valid
-    end
+  it "is valid with a key" do
+    company.should be_valid
+  end
 
-    it "is invalid when a key element is nil" do
-      company.id = nil
-      company.should_not be_valid
-    end
+  it "is invalid when a key element is nil" do
+    company.id = nil
+    company.should_not be_valid
   end
 
   describe "with no assigned id" do
-    it "should create unique uuid's for each instance" do
+    it "creates unique uuid's for each instance" do
       company_one = Company.new(name: 'x')
       company_two = Company.new(name: 'x')
       company_one.should_not == company_two
