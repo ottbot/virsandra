@@ -3,7 +3,7 @@ require 'spec_helper'
 class Company
   include Virsandra::Model
 
-  attribute :id, SimpleUUID::UUID, :default => SimpleUUID::UUID.new
+  attribute :id, SimpleUUID::UUID, :default => proc { SimpleUUID::UUID.new }
   attribute :name, String
   attribute :score, Fixnum
   attribute :founded, Fixnum
@@ -17,6 +17,7 @@ end
 describe Virsandra::Model do
 
   let(:id) { SimpleUUID::UUID.new }
+
   let(:company) { Company.new(id: id, name: "Testco", score: 78)}
 
   it "has attributes" do
@@ -38,6 +39,15 @@ describe Virsandra::Model do
   it "is invalid when a key element is nil" do
     company.id = nil
     company.should_not be_valid
+  end
+
+  describe "with no assigned id" do
+    it "creates unique uuid's for each instance" do
+      company_one = Company.new(name: 'x')
+      company_two = Company.new(name: 'x')
+      company_one.should_not == company_two
+      company_one[:id].should_not == company_two[:id]
+    end
   end
 
   it "is equivelent with the same model same attributes" do
