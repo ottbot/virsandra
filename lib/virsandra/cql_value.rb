@@ -25,7 +25,8 @@ module Virsandra
     private
 
     def escape(str)
-      str.to_s.gsub(/'/,"''")
+      str = str.to_s.gsub(/'/,"''")
+      str.force_encoding('ASCII-8BIT')
     end
 
   end
