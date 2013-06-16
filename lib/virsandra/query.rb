@@ -6,175 +6,84 @@ module Virsandra
     attr_reader :row
     attr_accessor :table, :statement
 
-    def self.select(*fields)
-      fields << "*" if fields.empty?
-      new :select, fields.join(', ')
-    end
+    class << self
 
-    def self.insert
-      new :insert
-    end
+      def select(*fields)
+        SelectQuery.new(fields)
+      end
 
-    def self.delete
-      new :delete
-    end
+      def insert
+        InsertQuery.new
+      end
 
-    def self.alter
-      new :alter
-    end
+      def delete
+        DeleteQuery.new
+      end
 
-    def initialize(statement, columns = nil)
-      @statement = statement
-      @columns = columns
-
-      if statement.is_a? Symbol
-        @query = [start_query]
-      else
-        @query = [@statement]
+      def alter
+        AlterQuery.new
       end
     end
 
     def to_s
-      @query.join(" ")
+      raw_query.map{|query_part| query_part.to_s }.reject(&:empty?).join(" ")
     end
 
-    def from(table)
-      return self if table.empty?
-
-      @query[1] = @table = table
-
-      self
+    def from *args
+      raise InvalidQuery.new("From, table or into clause not defined for #{self.class}")
     end
-
-    alias_method :into,  :from
     alias_method :table, :from
+    alias_method :into, :from
 
-    def where(params)
-      prep_clause!
-      validate_where!
-
-
-      clause = params.reduce([]) do |clause, key|
-        if key[1]
-          key[1] =  CQLValue.convert(key[1])
-          clause << key.join(' = ')
-        end
-      end
-
-      @query << "WHERE"
-      @query << clause.join(' AND ')
-
-      self
+    def where *args
+      raise InvalidQuery.new("Where clause not defined for #{self.class}")
     end
 
-    def values(params)
-      prep_clause!
-      validate_insert_values!
+    def order *args
+      raise InvalidQuery.new("Order clause not defined for #{self.class}")
+    end
 
-      return self if params.empty?
+    def limit *args
+      raise InvalidQuery.new("Limit clause not defined for #{self.class}")
+    end
 
-      params.delete_if {|_, val| val.nil? }
+    def add *args
+      raise InvalidQuery.new("Add clause not defined for #{self.class}")
+    end
 
-      column_names = params.keys
-
-      @query << "(#{column_names.join(', ')})"
-      @query << "VALUES"
-
-      values = column_names.map {|col| CQLValue.convert(params[col])}
-
-      @query << "(#{values.join(', ')})"
-
-      self
+    def values *args
+      raise InvalidQuery.new("Values clause not defined for #{self.class}")
     end
 
     def execute
-      @row = Virsandra.execute(self.to_s, *@query_arguments)
+      @row = Virsandra.execute(self.to_s)
     end
 
-    def fetch
+    def fetch(statement = nil)
+      @raw_query = statement if statement
       execute
       fetch_with_symbolized_keys
     end
 
-    def add(column, type = 'varchar')
-      prep_clause!
-      validate_alter!
-
-      @query << "ADD"
-      @query << column
-      @query << type
-
-      self
-    end
-
     private
 
-    def prep_clause!
-      @query = @query.take(2)
-      @query_arguments = []
-      validate_table!
-    end
-
-    def validate_where!
-      unless [:select, :delete].include? @statement
-        raise InvalidQuery.new("Where clause not defined for #{@statement}")
-      end
-    end
-
-    def validate_insert_values!
-      unless [:insert].include? @statement
-        raise InvalidQuery.new("Values clause not defined for #{@statement}")
-      end
-    end
-
-    def validate_alter!
-      unless [:alter].include? @statement
-        raise InvalidQuery.new("Add clause not defined for #{@statement}")
-      end
-    end
-
-    def validate_table!
-      raise InvalidQuery.new("You must set the table") unless @table
-    end
-
-    ## These method are not used temporarily!
-    ## the current CassandraCQL gem doesn't with
-    ## with placeholders on 1.2.2
-
-    # def insert_params
-    #   @columns.to_a.reduce([[],[]]) do |params, column|
-    #     2.times {|i| params[i] << column[i] }
-    #     params
-    #   end.flatten
-    # end
-
-    # def insert_place_holders
-    #   (['?'] * @columns.length).join(', ')
-    # end
-
-    def start_query
-      case @statement
-      when :select
-        "SELECT #{@columns} FROM"
-      when :insert
-        "INSERT INTO"
-      when :delete
-        "DELETE FROM"
-      when :alter
-        "ALTER TABLE"
-      else
-        raise ArgumentError, 'Statement not supported'
-      end
+    def raw_query
+      [@raw_query]
     end
 
     def fetch_with_symbolized_keys
-
-      row_hash = @row.fetch_hash if @row
-
-      return {} unless row_hash
-
-      Hash[row_hash.map{|(k,v)| [k.to_sym,v]}]
+      if @row
+        if row_hash = @row.fetch_hash
+          Hash[row_hash.map{|(k,v)| [k.to_sym,v]}]
+        else
+          {}
+        end
+      end
     end
-
   end
+
+end
+
+Dir[File.expand_path('../queries/*_query.rb', __FILE__)].each do |path|
+  require path
 end
