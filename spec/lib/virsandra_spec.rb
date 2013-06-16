@@ -45,7 +45,7 @@ describe Virsandra do
       servers: '127.0.0.1:9160',
       cql_version: '3.0.0',
       consistency: :quorum,
-      thrift_options: {retries: 5, connect_timeout: 1, timeout: 1},
+      thrift_options: {retries: 5, connect_timeout: 10, timeout: 10},
       keyspace: nil
     }
 
