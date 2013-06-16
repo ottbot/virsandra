@@ -8,14 +8,14 @@ Virsandra is meant to make it easy to use cassandra for persistence
 for models build with virtus.
 
 The feature set will likely remain simple, the idea is to not block
-development of other projects while the implentation of CQL changes
+development of other projects while the implantation of CQL changes
 quickly.
 
 ## Schema yourself
 
 At this stage, you're on your own in terms for schema management. The
 gem expects you have maintain table <=> model attribute mappings
-youself.
+yourself.
 
 ## Example usage
 
@@ -67,7 +67,7 @@ company.attributes
 #=> {name: "Gooble", founder: "Larry Brin", turnover: 2000000, founded: 2012}
 ````
 
-Seach for companies:
+Search for companies:
 ````ruby
 companies = Companies.all
 
