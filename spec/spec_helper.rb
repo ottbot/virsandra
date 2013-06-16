@@ -1,9 +1,17 @@
 require 'bundler/setup'
 
-require 'coveralls'
-Coveralls.wear!
+# require 'coveralls'
+# Coveralls.wear!
 
 require 'simplecov'
+SimpleCov.configure do
+  add_filter '/test/'
+  add_filter '/features/'
+  add_filter '/spec/'
+
+  add_group 'Libraries', 'lib'
+end
+SimpleCov.start
 SimpleCov.start
 
 require 'rspec'

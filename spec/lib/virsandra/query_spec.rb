@@ -2,6 +2,17 @@ require 'spec_helper'
 
 describe Virsandra::Query do
 
+  [:from, :table, :into, :where, :order, :limit, :add, :values].each do |method_name|
+    it "should raise error when #{method_name} called" do
+      expect{ described_class.new.send(method_name) }.to raise_error(Virsandra::InvalidQuery  )
+    end
+  end
+
+  it "should return empty hash when can't fetch hash from results" do
+    Virsandra.stub(:execute => double("row", :fetch_hash => nil))
+    described_class.new.fetch.should eq({})
+  end
+
   it "adds a from method" do
     q = Virsandra::Query.select.from(:foo)
     q.to_s.should == "SELECT * FROM foo"

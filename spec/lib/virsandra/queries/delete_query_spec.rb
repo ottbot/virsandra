@@ -22,5 +22,13 @@ describe Virsandra::DeleteQuery do
       query.from("foo").where(id: "123")
       query.to_s.should eq("DELETE FROM foo WHERE id = '123'")
     end
+
+    context "called more than once" do
+      it "should join all wheres together" do
+        query.from("foo").where(id: 1)
+        query.where(count: {gt: 4})
+        query.to_s.should eq("DELETE FROM foo WHERE id = 1 AND count > 4")
+      end
+    end
   end
 end

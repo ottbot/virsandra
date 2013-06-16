@@ -31,5 +31,11 @@ describe Virsandra::ValuesQuery do
 
       it{ should eq("")}
     end
+
+    context "when values is something else than hash" do
+      let(:values){ [] }
+
+      it{ should eq("") }
+    end
   end
 end

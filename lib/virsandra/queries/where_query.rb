@@ -17,7 +17,7 @@ module Virsandra
       if where_query.is_a?(self.class)
         @clause = [to_s, where_query.to_s.gsub(/^WHERE\s+/, "")].join(" AND ")
       else
-        raise InvalidQuery("WhereQuery can be mereged only with other WhereQuery")
+        raise InvalidQuery.new("WhereQuery can be mereged only with other WhereQuery")
       end
     end
     alias_method :merge, :+

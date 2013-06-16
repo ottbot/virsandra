@@ -11,6 +11,10 @@ describe Virsandra::WhereQuery do
     it "merge both where clauses with AND" do
       (query + other_query).should eq("WHERE id IN (1, 2) AND count <= 4")
     end
+
+    it "should raise error when something else than WhereQuery is given" do
+      expect{ query + 1}.to raise_error(Virsandra::InvalidQuery, "WhereQuery can be mereged only with other WhereQuery")
+    end
   end
 
   describe "#to_s" do
