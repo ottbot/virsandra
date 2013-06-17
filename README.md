@@ -13,8 +13,8 @@ quickly.
 
 ## Schema yourself
 
-At this stage, you're on your own in terms for schema management. The
-gem expects you have maintain table <=> model attribute mappings
+At this stage, you're on your own in terms of schema management. The
+gem expects you to maintain table <=> model attribute mappings
 yourself.
 
 ## Example usage
