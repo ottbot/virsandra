@@ -29,6 +29,16 @@ module Virsandra
       self
     end
 
+    def allow_filtering!
+      @allow_filtering = "ALLOW FILTERING"
+      self
+    end
+
+    def deny_filtering!
+      @allow_filtering = nil
+      self
+    end
+
     def reset
       @where, @order, @limit = nil
     end
@@ -41,7 +51,7 @@ module Virsandra
     private
 
     def raw_query
-      ["SELECT", columns_as_string, @from, @where, @order, @limit]
+      ["SELECT", columns_as_string, @from, @where, @order, @limit, @allow_filtering]
     end
 
     def columns_as_string
