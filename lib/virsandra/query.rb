@@ -78,6 +78,8 @@ module Virsandra
         else
           {}
         end
+      else
+        {}
       end
     end
   end

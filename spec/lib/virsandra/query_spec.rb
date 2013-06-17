@@ -13,6 +13,11 @@ describe Virsandra::Query do
     described_class.new.fetch.should eq({})
   end
 
+  it "should return empty hash when no results are returned" do
+    Virsandra.stub(:execute => nil )
+    described_class.new.fetch.should eq({})
+  end
+
   it "adds a from method" do
     q = Virsandra::Query.select.from(:foo)
     q.to_s.should == "SELECT * FROM foo"
