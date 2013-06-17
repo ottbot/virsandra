@@ -72,15 +72,10 @@ module Virsandra
     end
 
     def fetch_with_symbolized_keys
-      if @row
-        if row_hash = @row.fetch_hash
-          Hash[row_hash.map{|(k,v)| [k.to_sym,v]}]
-        else
-          {}
-        end
-      else
-        {}
-      end
+      row_hash = @row && @row.fetch_hash
+      return {} unless row_hash
+
+      Hash[row_hash.map{|(k,v)| [k.to_sym,v]}]
     end
   end
 

@@ -13,7 +13,7 @@ describe Virsandra::Query do
     described_class.new.fetch.should eq({})
   end
 
-  it "should return empty hash when no results are returned" do
+  it "should return empty hash when results are not available" do
     Virsandra.stub(:execute => nil )
     described_class.new.fetch.should eq({})
   end
