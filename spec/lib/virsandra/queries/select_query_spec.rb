@@ -88,4 +88,21 @@ describe Virsandra::SelectQuery do
       expect{ query.to_s }.to raise_error(Virsandra::InvalidQuery, "You must set from")
     end
   end
+
+  describe "#allow_filtering!" do
+    subject{ super().from("foo").where(id: 1).allow_filtering!.to_s }
+
+    it{ should eq("SELECT * FROM foo WHERE id = 1 ALLOW FILTERING")}
+  end
+
+  describe "#deny_filtering!" do
+    subject{ super().from("foo").where(id: 1) }
+
+    it "should remove allow filtering clause" do
+      subject.allow_filtering!
+      subject.to_s.should eq("SELECT * FROM foo WHERE id = 1 ALLOW FILTERING")
+      subject.deny_filtering!
+      subject.to_s.should eq("SELECT * FROM foo WHERE id = 1")
+    end
+  end
 end
