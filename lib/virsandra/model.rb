@@ -29,6 +29,10 @@ module Virsandra
         ModelQuery.new(self).save if valid?
       end
 
+      def delete
+        ModelQuery.new(self).delete
+      end
+
       def ==(other)
         other.is_a?(self.class) && attributes == other.attributes
       end

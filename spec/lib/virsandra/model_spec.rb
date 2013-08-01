@@ -107,6 +107,32 @@ describe Virsandra::Model do
     end
   end
 
+  describe "deleting a model" do
+    before do
+      Virsandra.execute("USE virtest")
+      Virsandra.execute("TRUNCATE companies")
+    end
+
+    it "can be deleted" do
+      Virsandra.execute("INSERT INTO companies (id, score) VALUES (#{id.to_guid}, 101)")
+      company = Company.find(id: id, score: 101)
+      company.delete
+      Company.where(id: id, score: 101).to_a.should be_empty
+    end
+
+    it "only deletes the current model" do
+      Virsandra.execute("INSERT INTO companies (id, score) VALUES (#{id.to_guid}, 101)")
+      Virsandra.execute("INSERT INTO companies (id, score) VALUES (#{id.to_guid}, 102)")
+      company = Company.find(id: id, score: 101)
+      company.delete
+      Company.where(id: id, score: 102).to_a.should_not be_empty
+
+    end
+
+
+
+  end
+
   describe "working with existing records" do
     before do
       Virsandra.execute("USE virtest")
