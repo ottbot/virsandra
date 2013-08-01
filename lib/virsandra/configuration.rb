@@ -16,7 +16,7 @@ module Virsandra
     end
 
     def reset!
-      self.servers = '127.0.0.1:9160'
+      self.servers = '127.0.0.1:9042'
       self.consistency = :quorum
       self.keyspace = nil
     end

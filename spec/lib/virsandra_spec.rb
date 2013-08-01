@@ -42,7 +42,7 @@ describe Virsandra do
     Virsandra.reset!
 
     defaults = {
-      servers: '127.0.0.1:9160',
+      servers: '127.0.0.1:9042',
       consistency: :quorum,
       keyspace: nil
     }
