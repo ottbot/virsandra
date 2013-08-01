@@ -1,25 +1,47 @@
 require 'spec_helper'
 
 describe Virsandra::Connection do
-  before { Virsandra.disconnect! }
+  let(:config){ Virsandra::Configuration.new(keyspace: :my_keyspace) }
+  let(:handle){ double("handle", use: nil) }
+  subject(:connection){ described_class.new(config) }
 
-  let(:connection) { Virsandra::Connection.new(Virsandra)}
+  before do
+    Cql::Client.stub(:connect).and_return(handle)
+  end
 
-  it "raises an exception if settings are invalid" do
-    Virsandra.keyspace = nil
-    expect { connection }.to raise_error(Virsandra::ConfigurationError)
+  its(:config){ should eq(config) }
+
+  context "invalid configuration" do
+    it "raises an exception if settings are invalid" do
+      config.keyspace = nil
+      expect { connection }.to raise_error(Virsandra::ConfigurationError)
+    end
   end
 
   it "obtains a db connection" do
-    connection.handle.should be_a Cql::Client::SynchronousClient
+    connection.handle.should eq(handle)
   end
 
   it "delegates to the cassandra handle" do
-    connection.handle.should_receive(:execute)
-    connection.execute("SELECT * FROM some_table")
+    connection.handle.should_receive(:keyspace)
+    connection.keyspace
   end
 
   it "checks if a cassandra connection will respond to a method" do
+    handle.stub(:respond_to? => true)
     connection.should respond_to :execute
+  end
+
+  it "should disconnect" do
+    handle.should_receive(:close)
+    connection.disconnect!
+  end
+
+  describe "#execute" do
+    it "should use configuration consistency when none is given" do
+      config.consistency = :one
+      handle.should_receive(:execute).with("query", :one)
+      connection.execute("query")
+    end
   end
 end
