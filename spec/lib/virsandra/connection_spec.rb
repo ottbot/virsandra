@@ -11,7 +11,7 @@ describe Virsandra::Connection do
   end
 
   it "obtains a db connection" do
-    connection.handle.should be_a CassandraCQL::Database
+    connection.handle.should be_a Cql::Client::SynchronousClient
   end
 
   it "delegates to the cassandra handle" do

@@ -1,5 +1,6 @@
 require "virtus"
-require "cassandra-cql/1.2"
+require "cql"
+require "simple_uuid"
 
 require "virsandra/version"
 require "virsandra/configuration"

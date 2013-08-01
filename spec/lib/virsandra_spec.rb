@@ -43,9 +43,7 @@ describe Virsandra do
 
     defaults = {
       servers: '127.0.0.1:9160',
-      cql_version: '3.0.0',
       consistency: :quorum,
-      thrift_options: {retries: 5, connect_timeout: 10, timeout: 10},
       keyspace: nil
     }
 
@@ -65,12 +63,10 @@ describe Virsandra do
   end
 
   it "reconnects if dirty" do
-    CassandraCQL::Database.stub(:new)
-
     Virsandra::Connection.should_receive(:new).twice.and_call_original
     Virsandra.connection
 
-    Virsandra.keyspace = 'foo'
+    Virsandra.keyspace = 'system'
     Virsandra.connection
     Virsandra.connection
   end

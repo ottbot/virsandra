@@ -42,7 +42,7 @@ def build_up
   begin
     create_keyspace
     create_companies_table
-  rescue CassandraCQL::Error::InvalidRequestException
+  rescue Cql::QueryError
     drop_keyspace
 
     if defined?(retried)

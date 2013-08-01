@@ -9,7 +9,7 @@ describe Virsandra::Query do
   end
 
   it "should return empty hash when can't fetch hash from results" do
-    Virsandra.stub(:execute => double("row", :fetch_hash => nil))
+    Virsandra.stub(:execute => double("row", :first => nil))
     described_class.new.fetch.should eq({})
   end
 

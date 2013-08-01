@@ -13,11 +13,13 @@ module Virsandra
     end
 
     def connect!
-      cql_options = @options.select {|k| [:keyspace, :cql_version, :consistency].include?(k) }
+      @handle = Cql::Client.connect(hosts: @options[:servers])
+      @handle.use(@options[:keyspace])
+      @handle
+    end
 
-      @handle = CassandraCQL::Database.new(@options[:servers],
-                                           cql_options,
-                                           @options[:thrift_options])
+    def disconnect!
+      @handle.close
     end
 
     # Delegate to CassandraCQL::Database handle

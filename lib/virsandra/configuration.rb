@@ -6,9 +6,7 @@ module Virsandra
     OPTIONS = [
       :keyspace,
       :servers,
-      :thrift_options,
       :consistency,
-      :cql_version
     ]
 
     attr_accessor *OPTIONS
@@ -19,9 +17,7 @@ module Virsandra
 
     def reset!
       self.servers = '127.0.0.1:9160'
-      self.cql_version = '3.0.0'
       self.consistency = :quorum
-      self.thrift_options = {retries: 5, connect_timeout: 10, timeout: 10}
       self.keyspace = nil
     end
 
