@@ -79,9 +79,9 @@ company_names = Companies.all.map(&:name)
 ## TODO / Missing
 1. Create / filter with index
 2. Model attributes that are not Cassandra columns
-3. Delete models
-4. Counters
-5. Schema creation / migration
+3. Counters
+4. Schema creation / migration
+5. Support forSet, List, and Map column types
 
 
 ## Contributing
