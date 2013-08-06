@@ -1,80 +1,108 @@
 require 'spec_helper'
 
 describe Virsandra do
+  let(:config){ double("config", :changed? => false, :accept_changes => true) }
+  let(:connection){ double("connection") }
+  subject{ described_class }
 
-  before { Virsandra.disconnect! }
-
-  it "delegates execute to the connection handle" do
-    Virsandra.should respond_to :execute
+  before do
+    described_class::Connection.stub(new: connection)
+    described_class::Configuration.stub(new: config)
+    described_class.disconnect!
+    described_class.reset_configuration!
   end
 
-  it "has a connection" do
-    Virsandra::Connection.should_receive(:new).with(Virsandra).and_call_original
-    Virsandra.connection.should be_a Virsandra::Connection
+  after do
+    described_class::Connection.unstub(:new)
+    described_class::Configuration.unstub(:new)
+    described_class.disconnect!
+    described_class.reset_configuration!
   end
 
-  it "can be configured via block" do
-    Virsandra.configure do |c|
-      c.keyspace = 'foo'
+  describe "#execute" do
+    it "should be delegated to connection" do
+      connection.should_receive(:execute).with("query")
+      described_class.execute("query")
+    end
+  end
+
+  describe "#connection" do
+    it "should pass configuration to connection" do
+      described_class::Connection.should_receive(:new).with(config).once
+      described_class.connection
+      described_class.connection.should eq(connection)
     end
 
-    Virsandra.keyspace.should == 'foo'
+    it "should create new connection when configuration has been changed" do
+      described_class::Connection.should_receive(:new).twice
+      described_class.connection
+      config.stub(:changed? => true)
+      described_class.connection
+    end
+
+    it "should have connection for each thread" do
+      described_class::Connection.should_receive(:new).twice
+      threads = []
+      threads << Thread.new{ described_class.connection }
+      threads << Thread.new{ described_class.connection }
+      threads.map(&:join)
+    end
   end
 
-  it "resets to default settings" do
-    Virsandra.keyspace = 'foo'
-    Virsandra.reset!
-    Virsandra.keyspace.should be_nil
+
+  describe "#configuration" do
+    it "returns configuration" do
+      described_class.configuration.should eq(config)
+    end
+
+    it "should have configuration for every thread" do
+      described_class::Configuration.should_receive(:new).twice
+      threads = []
+      threads << Thread.new{ described_class.configuration }
+      threads << Thread.new{ described_class.configuration }
+      threads.map(&:join)
+    end
   end
 
-  it "is invalid without a keyspace" do
-    Virsandra.keyspace = nil
-    expect { Virsandra.validate! }.to raise_error(Virsandra::ConfigurationError)
+  describe "#configure" do
+    it "should yield to block if block given" do
+      expect{|b| described_class.configure(&b) }.to yield_with_args(config)
+    end
   end
 
-  it "is invalid without a server" do
-    Virsandra.keyspace = 'foo'
-    Virsandra.servers = nil
-    expect { Virsandra.validate! }.to raise_error(Virsandra::ConfigurationError)
+  describe "delegation to configuration" do
+    [:keyspace, :servers, :consistency, :reset!].each do |method_name|
+      it "should deletege #{method_name} to configuration" do
+        config.should_receive(method_name).any_number_of_times.and_return("value")
+        described_class.send(method_name).should eq("value")
+      end
+    end
+
+    [:keyspace=, :servers=, :consistency=].each do |method_name|
+      it "should deletege #{method_name} to configuration" do
+        config.should_receive(method_name).with("value").any_number_of_times
+        described_class.send(method_name, "value")
+      end
+    end
   end
 
-  it "hashifies the settings" do
-    Virsandra.reset!
-
-    defaults = {
-      servers: '127.0.0.1:9042',
-      consistency: :quorum,
-      keyspace: nil
-    }
-
-    Virsandra.to_hash.should == defaults
+  describe "#dissconnect!" do
+    it "should dissconnect" do
+      described_class.connection
+      connection.stub(respond_to?: true)
+      connection.should_receive(:disconnect!)
+      described_class.disconnect!
+    end
   end
 
-  it "can tell if connection settings are dirty" do
-    Virsandra.connection
-    Virsandra.keyspace = 'funky'
-    Virsandra.should be_dirty
+  describe "#reset_configuration!" do
+    it "should reset configuration" do
+      described_class::Configuration.should_receive(:new).twice
+      described_class.configuration
+      described_class.reset_configuration!
+      described_class.configuration
+    end
   end
 
-  it "only connects once" do
-    Virsandra::Connection.should_receive(:new).once.and_call_original
-    Virsandra.connection
-    Virsandra.connection
-  end
-
-  it "reconnects if dirty" do
-    Virsandra::Connection.should_receive(:new).twice.and_call_original
-    Virsandra.connection
-
-    Virsandra.keyspace = 'system'
-    Virsandra.connection
-    Virsandra.connection
-  end
-
-  it "disconnects cassandra" do
-    Virsandra.connection #reestablish conn for the test
-    Virsandra.connection.should_receive(:disconnect!)
-    Virsandra.disconnect!
-  end
 
 end

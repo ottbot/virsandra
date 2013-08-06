@@ -3,23 +3,26 @@ module Virsandra
 
     extend Forwardable
 
-    attr_reader :handle, :options
+    attr_reader :handle, :config
 
-    def initialize(options)
-      options.validate!
-      @options = options.to_hash
-
+    def initialize(config)
+      @config = config
+      config.validate!
       connect!
     end
 
     def connect!
-      @handle = Cql::Client.connect(hosts: @options[:servers])
-      @handle.use(@options[:keyspace])
+      @handle = Cql::Client.connect(hosts: @config.servers)
+      @handle.use(@config.keyspace)
       @handle
     end
 
     def disconnect!
       @handle.close
+    end
+
+    def execute(query, consistency = nil)
+      @handle.execute(query, consistency || config.consistency)
     end
 
     # Delegate to CassandraCQL::Database handle
