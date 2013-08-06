@@ -7,6 +7,7 @@ describe "Virsandra", integration: true do
   end
 
   it "allows to disconnect" do
-    expect{ Virsandra.disconnect! }.not_to raise_error
+    Virsandra.connection.should_receive(:disconnect!).and_call_original
+    Virsandra.disconnect!
   end
 end

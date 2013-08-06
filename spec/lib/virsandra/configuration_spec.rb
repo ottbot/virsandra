@@ -8,7 +8,7 @@ describe Virsandra::Configuration do
   its(:consistency){ should eq(:quorum) }
   its(:keyspace){ should be_nil }
 
-  it "should usge given values over default ones" do
+  it "uses given values over default ones" do
     described_class.new(consistency: :one).consistency.should eq(:one)
   end
 
@@ -22,7 +22,7 @@ describe Virsandra::Configuration do
     context "no servers" do
       let(:given_options){ {servers: nil} }
 
-      it "should rase an error" do
+      it "should raise an error" do
         expect{ config.validate! }.to raise_error(Virsandra::ConfigurationError)
       end
     end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Virsandra do
-  let(:config){ double("config", :changed? => false, :accept_changes => nil) }
+  let(:config){ double("config", :changed? => false, :accept_changes => true) }
   let(:connection){ double("connection") }
   subject{ described_class }
 
@@ -9,18 +9,20 @@ describe Virsandra do
     described_class::Connection.stub(new: connection)
     described_class::Configuration.stub(new: config)
     described_class.disconnect!
+    described_class.reset_configuration!
   end
 
   after do
     described_class::Connection.unstub(:new)
     described_class::Configuration.unstub(:new)
     described_class.disconnect!
+    described_class.reset_configuration!
   end
 
   describe "#execute" do
     it "should be delegated to connection" do
-      connection.should_receive(:execute)
-      described_class.execute
+      connection.should_receive(:execute).with("query")
+      described_class.execute("query")
     end
   end
 
@@ -69,10 +71,17 @@ describe Virsandra do
   end
 
   describe "delegation to configuration" do
-    [:keyspace, :keyspace=, :servers, :servers=, :consistency, :consistency=, :reset!].each do |method_name|
+    [:keyspace, :servers, :consistency, :reset!].each do |method_name|
       it "should deletege #{method_name} to configuration" do
-        config.should_receive(method_name).any_number_of_times
-        described_class.send(method_name)
+        config.should_receive(method_name).any_number_of_times.and_return("value")
+        described_class.send(method_name).should eq("value")
+      end
+    end
+
+    [:keyspace=, :servers=, :consistency=].each do |method_name|
+      it "should deletege #{method_name} to configuration" do
+        config.should_receive(method_name).with("value").any_number_of_times
+        described_class.send(method_name, "value")
       end
     end
   end
@@ -83,6 +92,15 @@ describe Virsandra do
       connection.stub(respond_to?: true)
       connection.should_receive(:disconnect!)
       described_class.disconnect!
+    end
+  end
+
+  describe "#reset_configuration!" do
+    it "should reset configuration" do
+      described_class::Configuration.should_receive(:new).twice
+      described_class.configuration
+      described_class.reset_configuration!
+      described_class.configuration
     end
   end
 

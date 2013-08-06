@@ -56,6 +56,7 @@ module Virsandra
     end
 
     def execute
+
       @row = Virsandra.execute(self.to_s)
     end
 
