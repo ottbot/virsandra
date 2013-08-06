@@ -40,7 +40,8 @@ module Virsandra
 
     def query_enumerator(query)
       Enumerator.new do |yielder|
-        query.execute.each do |row|
+        rows = query.execute
+        rows.each do |row|
           record = @model.new(row.to_hash)
           yielder.yield record
         end

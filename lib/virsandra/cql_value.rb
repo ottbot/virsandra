@@ -12,17 +12,22 @@ module Virsandra
     end
 
     def to_cql
-      case value
-      when Numeric
-        value.to_s
-      when SimpleUUID::UUID
+      if value.respond_to?(:to_guid)
         value.to_guid
-      else
+      elsif should_escape?(value)
         "'#{escape(value)}'"
+      else
+        value.to_s
       end
     end
 
     private
+
+    def should_escape?(value)
+      !![String, Symbol, Time, Date].detect do |klass|
+        value.is_a?(klass)
+      end
+    end
 
     def escape(str)
       str = str.to_s.gsub(/'/,"''")

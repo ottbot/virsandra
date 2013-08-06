@@ -1,32 +1,26 @@
 module Virsandra
-  class ConfigurationError < Exception; ; end
-
-  module Configuration
-
+  class Configuration
     OPTIONS = [
+      :consistency,
       :keyspace,
       :servers,
-      :thrift_options,
-      :consistency,
-      :cql_version
-    ]
+    ].freeze
+
+    DEFAULT_OPTION_VALUES = {
+      servers: "127.0.0.1",
+      consistency: :quorum
+    }.freeze
 
     attr_accessor *OPTIONS
 
-    def self.extended(base)
-      base.reset!
+    def initialize(options = {})
+      reset!
+      use_options(options || {})
+      accept_changes
     end
 
     def reset!
-      self.servers = '127.0.0.1:9160'
-      self.cql_version = '3.0.0'
-      self.consistency = :quorum
-      self.thrift_options = {retries: 5, connect_timeout: 10, timeout: 10}
-      self.keyspace = nil
-    end
-
-    def configure
-      yield self
+      use_options(DEFAULT_OPTION_VALUES)
     end
 
     def validate!
@@ -35,12 +29,33 @@ module Virsandra
       end
     end
 
+    def accept_changes
+      @old_hash = hash
+    end
+
     def to_hash
-      OPTIONS.reduce({}) do |settings, option|
-        settings[option] = self.send(option)
-        settings
+      OPTIONS.each_with_object({}) do |attr, settings|
+        settings[attr] = send(attr)
       end
     end
 
+    def changed?
+      hash != @old_hash
+    end
+
+    def hash
+      to_hash.hash
+    end
+
+    private
+
+    def use_options(options)
+      options.each do |key, value|
+        if OPTIONS.include?(key)
+          send(:"#{key}=", value)
+        end
+      end
+    end
   end
+
 end

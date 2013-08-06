@@ -56,6 +56,7 @@ module Virsandra
     end
 
     def execute
+
       @row = Virsandra.execute(self.to_s)
     end
 
@@ -72,7 +73,7 @@ module Virsandra
     end
 
     def fetch_with_symbolized_keys
-      row_hash = @row && @row.fetch_hash
+      row_hash = @row && @row.first
       return {} unless row_hash
 
       Hash[row_hash.map{|(k,v)| [k.to_sym,v]}]

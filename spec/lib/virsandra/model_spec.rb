@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'feature_helper'
 
 class Company
   include Virsandra::Model
@@ -14,7 +14,7 @@ class Company
 end
 
 
-describe Virsandra::Model do
+describe Virsandra::Model, integration: true do
 
   let(:id) { SimpleUUID::UUID.new }
 
