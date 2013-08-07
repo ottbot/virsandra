@@ -16,6 +16,10 @@ end
 
 describe Virsandra::Model, integration: true do
 
+  before do
+    create_companies_table
+  end
+
   let(:id) { SimpleUUID::UUID.new }
 
   let(:company) { Company.new(id: id, name: "Testco", score: 78)}

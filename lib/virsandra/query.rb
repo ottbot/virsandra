@@ -2,6 +2,9 @@ module Virsandra
   class InvalidQuery < Exception; end
 
   class Query
+    QUERY_METHODS = [
+      :table, :from, :into, :where, :order, :limit, :add, :values, :columns, :and, :with
+    ].freeze
 
     attr_reader :row
     attr_accessor :table, :statement
@@ -30,33 +33,20 @@ module Virsandra
     end
 
     def from *args
-      raise InvalidQuery.new("From, table or into clause not defined for #{self.class}")
+      invalid_method_call("From, table or into")
     end
     alias_method :table, :from
     alias_method :into, :from
 
-    def where *args
-      raise InvalidQuery.new("Where clause not defined for #{self.class}")
-    end
-
-    def order *args
-      raise InvalidQuery.new("Order clause not defined for #{self.class}")
-    end
-
-    def limit *args
-      raise InvalidQuery.new("Limit clause not defined for #{self.class}")
-    end
-
-    def add *args
-      raise InvalidQuery.new("Add clause not defined for #{self.class}")
-    end
-
-    def values *args
-      raise InvalidQuery.new("Values clause not defined for #{self.class}")
+    def method_missing(method_name, *args, &block)
+      if QUERY_METHODS.include?(method_name.to_sym)
+        invalid_method_call(method_name.to_s.capitalize)
+      else
+        super
+      end
     end
 
     def execute
-
       @row = Virsandra.execute(self.to_s)
     end
 
@@ -77,6 +67,10 @@ module Virsandra
       return {} unless row_hash
 
       Hash[row_hash.map{|(k,v)| [k.to_sym,v]}]
+    end
+
+    def invalid_method_call(title)
+      raise InvalidQuery.new("#{title} clause not defined for #{self.class}")
     end
   end
 

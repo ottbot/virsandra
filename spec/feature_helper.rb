@@ -32,7 +32,6 @@ module IntegrationTestHelper
   def build_up
     begin
       create_keyspace
-      create_companies_table
     rescue Cql::QueryError
       drop_keyspace
 

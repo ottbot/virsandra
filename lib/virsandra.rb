@@ -4,9 +4,9 @@ require 'simple_uuid'
 require 'forwardable'
 
 
-require "virsandra/version"
+require 'virsandra/version'
 require 'virsandra/errors'
-require "virsandra/configuration"
+require 'virsandra/configuration'
 
 module Virsandra
 
@@ -98,8 +98,10 @@ end
 
 
 
-require "virsandra/connection"
-require "virsandra/cql_value"
-require "virsandra/query"
-require "virsandra/model_query"
-require "virsandra/model"
+require 'virsandra/connection'
+require 'virsandra/cql_value'
+require 'virsandra/query'
+require 'virsandra/model_query'
+require 'virsandra/model'
+require 'virsandra/keyspace'
+require 'virsandra/migration'
