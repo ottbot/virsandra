@@ -24,7 +24,7 @@ module Virsandra
     private
 
     def should_escape?(value)
-      !![String, Symbol, Time, Date].detect do |klass|
+      [String, Symbol, Time, Date].any? do |klass|
         value.is_a?(klass)
       end
     end

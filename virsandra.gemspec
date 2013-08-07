@@ -11,17 +11,17 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Cassandra CQL3 persistence for Virtus extended classes}
   gem.summary       = %q{Easily store models defined with Virtus in Cassandra using CQL3}
   gem.homepage      = "https://github.com/ottbot/virsandra"
-  
+
   gem.licenses      = ["MIT"]
   gem.files         =  Dir["{lib,vendor}/**/*"] + ["Rakefile", "README.md"]
   gem.test_files    = Dir["{spec}/**/*"]
-  
+
   gem.extra_rdoc_files = [
     "LICENSE.txt",
     "README.md"
   ]
   gem.require_paths = ["lib"]
- 
+
 
   #gem.add_dependency "cassandra-cql", #WHEN IT SUPPORTS CQL3
   gem.add_dependency "virtus", "~> 0.5.5"
