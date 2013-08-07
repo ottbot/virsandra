@@ -76,15 +76,9 @@ googbles = Companies.where(name: 'Gooble')
 company_names = Companies.all.map(&:name)
 ````
 
-## TODO / Missing
-1. Support for Set, List, and Map column types
-1. Schema creation / migration
-1. Model DSL method chaining
-1. Update one or more rows
-1. Secondary indices
-1. Model attributes that are not Cassandra columns
-1. Counters (invalid ?)
-
+## TODO / Milestones
+Todos are managed with [Github issues](https://github.com/ottbot/virsandra/issues "Github issue"),
+hopefully assigned to a milestone.
 
 
 
