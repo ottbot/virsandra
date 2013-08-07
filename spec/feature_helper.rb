@@ -46,7 +46,6 @@ module IntegrationTestHelper
 end
 
 
-
 RSpec.configure do |config|
 
   config.include(IntegrationTestHelper)

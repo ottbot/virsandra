@@ -22,4 +22,9 @@ describe Virsandra::CQLValue do
     uuid = SimpleUUID::UUID.new
     subject.convert(uuid).should == uuid.to_guid
   end
+
+  it "convert Hash to map" do
+    hash = {key1: 'value', key2: 3}
+    subject.convert(hash).should == "{ 'key1': 'value', 'key2': 3 }"
+  end
 end

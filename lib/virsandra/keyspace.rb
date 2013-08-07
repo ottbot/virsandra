@@ -1,17 +1,33 @@
 module Virsandra
   class Keyspace
+    class WithReplicationMissedError < ArgumentError ; end
+
     SYSTEM_KEYSPACE = "system"
+    TABLES = {
+      columnfamilies: "schema_columnfamilies",
+      keyspaces: "schema_keyspaces"
+    }
 
     attr_reader :name
 
-    def initialize(name, options = {})
-      @config_options = options.delete(:configuration) || {}
+    def initialize(name, config_options = {})
+      @config_options = config_options
       @name = name
+    end
+
+    def create(options)
+      if options[:replication]
+        query = Virsandra::CreateKeyspaceQuery.new(name)
+        query.with(options)
+        system_execute(query.to_s)
+      else
+        raise WithReplicationMissedError.new(":replication option must be provided")
+      end
     end
 
     def tables
       query = Virsandra::SelectQuery.new("columnfamily_name")
-      query.from("schema_columnfamilies").where(keyspace_name: name)
+      query.from(TABLES[:columnfamilies]).where(keyspace_name: name)
       system_execute(query.to_s).to_a.map(&:values).flatten.sort
     end
 
@@ -20,6 +36,13 @@ module Virsandra
       query.columns(columns)
       execute(query.to_s)
     end
+
+    def exists?
+      query = Virsandra::SelectQuery.new
+      query.from(TABLES[:keyspaces]).where(keyspace_name: name)
+      system_execute(query.to_s).to_a.any?
+    end
+
 
     def execute(query)
       connection.execute(query)
