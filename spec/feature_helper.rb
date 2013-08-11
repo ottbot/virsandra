@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-TEST_KEYSPACE = "virtest"
-
 module IntegrationTestHelper
   def create_keyspace
     Virsandra.keyspace = 'system'

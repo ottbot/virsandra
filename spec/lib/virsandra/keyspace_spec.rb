@@ -72,4 +72,11 @@ describe Virsandra::Keyspace do
       keyspace.create_table("my_table", ["column_one int", "column_two text"])
     end
   end
+
+  describe "#table_exists?" do
+    it "returns true when table exists" do
+      connection.should_receive(:execute).with("SELECT * FROM schema_columnfamilies WHERE keyspace_name = '#{name}' AND columnfamily_name = 'my_table'")
+      keyspace.table_exists?("my_table")
+    end
+  end
 end

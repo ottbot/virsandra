@@ -10,6 +10,7 @@ require 'rspec'
 require 'virsandra'
 
 VIRSANDRA_TEST_ROOT = File.expand_path('..', __FILE__)
+TEST_KEYSPACE = "virtest"
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true

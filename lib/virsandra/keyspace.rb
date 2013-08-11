@@ -43,6 +43,11 @@ module Virsandra
       system_execute(query.to_s).to_a.any?
     end
 
+    def table_exists?(table_name)
+      query = Virsandra::SelectQuery.new
+      query.from(TABLES[:columnfamilies]).where(keyspace_name: name, columnfamily_name: table_name)
+      system_execute(query.to_s).to_a.any?
+    end
 
     def execute(query)
       connection.execute(query)
