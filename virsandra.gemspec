@@ -22,10 +22,8 @@ Gem::Specification.new do |gem|
   ]
   gem.require_paths = ["lib"]
 
-
-  #gem.add_dependency "cassandra-cql", #WHEN IT SUPPORTS CQL3
   gem.add_dependency "virtus", "~> 0.5.5"
-  gem.add_dependency "cql-rb", "~> 1.0.4"
+  gem.add_dependency "cql-rb", "~> 1.1.0.pre7"
 
   gem.add_development_dependency "rake", "~>10.0.4"
   gem.add_development_dependency "rspec", "~>2.13.0"
