@@ -12,7 +12,7 @@ module Virsandra
     end
 
     def connect!
-      @handle = Cql::Client.connect(hosts: @config.servers)
+      @handle = Cql::Client.connect(hosts: [@config.servers].flatten)
       @handle.use(@config.keyspace)
       @handle
     end
