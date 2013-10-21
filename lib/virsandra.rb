@@ -12,7 +12,14 @@ module Virsandra
 
   class << self
     def configuration
-      Thread.current[:configuration] ||= Virsandra::Configuration.new
+      if Thread.current[:configuration]
+        Thread.current[:configuration]
+      elsif Thread.main[:configuration]
+        Thread.main[:configuration]
+      else
+        set_configuration
+        configuration
+      end
     end
 
     def configure
@@ -75,6 +82,15 @@ module Virsandra
 
     def dirty?
       Thread.current[:connection].nil? || configuration.changed?
+    end
+
+    def set_configuration
+      new_configuration = Virsandra::Configuration.new
+      if Thread.current == Thread.main
+        Thread.main[:configuration] = new_configuration
+      else
+        Thread.current[:configuration] = new_configuration
+      end
     end
 
   end
