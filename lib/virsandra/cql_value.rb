@@ -14,19 +14,17 @@ module Virsandra
     def to_cql
       if value.respond_to?(:to_guid)
         value.to_guid
-      elsif should_escape?(value)
-        "'#{escape(value)}'"
-      else
+      elsif is_number?(value)
         value.to_s
+      else
+        "'#{escape(value)}'"
       end
     end
 
     private
 
-    def should_escape?(value)
-      !![String, Symbol, Time, Date].detect do |klass|
-        value.is_a?(klass)
-      end
+    def is_number?(value)
+      value.is_a?(Numeric)
     end
 
     def escape(str)
