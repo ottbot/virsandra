@@ -55,12 +55,18 @@ describe Virsandra do
       described_class.configuration.should eq(config)
     end
 
-    it "should have configuration for every thread" do
-      described_class::Configuration.should_receive(:new).twice
-      threads = []
-      threads << Thread.new{ described_class.configuration }
-      threads << Thread.new{ described_class.configuration }
-      threads.map(&:join)
+    context "when configuration defined globaly" do
+      it "uses global configuration when there is no defined for thread"
+    end
+
+    context "when configuration defined for each thread" do
+      it "should have configuration for every thread" do
+        described_class::Configuration.should_receive(:new).twice
+        threads = []
+        threads << Thread.new{ described_class.configuration }
+        threads << Thread.new{ described_class.configuration }
+        threads.map(&:join)
+      end
     end
   end
 

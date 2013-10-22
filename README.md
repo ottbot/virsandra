@@ -22,8 +22,8 @@ yourself.
 ````ruby
 require 'virsandra'
 
-Virsandra.configure |c|
-  c.servers = "127.0.0.1:9160"
+Virsandra.configure do |c|
+  c.servers = "127.0.0.1"
   c.keyspace = "example_keyspace"
 end
 ````
