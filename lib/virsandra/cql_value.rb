@@ -20,6 +20,8 @@ module Virsandra
         convert_uuid(value_to_convert)
       elsif is_number?(value_to_convert)
         convert_object(value_to_convert)
+      elsif is_boolean?(value_to_convert)
+        convert_object(value_to_convert)
       else
         convert_text(value_to_convert)
       end
@@ -29,6 +31,10 @@ module Virsandra
 
     def is_number?(value)
       value.is_a?(Numeric)
+    end
+
+    def is_boolean?(value)
+      value.is_a?(TrueClass) || value.is_a?(FalseClass)
     end
 
     def convert_uuid(given_value = nil)
