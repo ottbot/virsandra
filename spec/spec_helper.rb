@@ -7,6 +7,7 @@ require 'simplecov'
 SimpleCov.start
 
 require 'rspec'
+require 'simple_uuid'
 require 'virsandra'
 
 VIRSANDRA_TEST_ROOT = File.expand_path('..', __FILE__)
