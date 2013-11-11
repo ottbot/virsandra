@@ -7,7 +7,9 @@ require 'simplecov'
 SimpleCov.start
 
 require 'rspec'
+require 'simple_uuid'
 require 'virsandra'
+
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true

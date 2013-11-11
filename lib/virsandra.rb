@@ -1,6 +1,5 @@
 require 'virtus'
 require 'cql'
-require 'simple_uuid'
 require 'forwardable'
 
 
