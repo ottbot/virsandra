@@ -4,7 +4,6 @@ namespace :virsandra do
     desc "Migrate Cassandra up"
     task :up do
       require 'virsandra'
-      require 'pry'
       keyspace = if ENV["KEYSPACE"]
         Virsandra::Keyspace.new(ENV["KEYSPACE"])
       end

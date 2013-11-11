@@ -22,13 +22,14 @@ module Virsandra
         keyspace.execute(insert.to_s)
       end
 
-      private
-
       def ensure_table
-        unless keyspace.table_exists?(SCHEMA_TABLE)
+        if !@is_table_created && !keyspace.table_exists?(SCHEMA_TABLE)
           keyspace.create_table(SCHEMA_TABLE, ["name text PRIMARY KEY"])
+          @is_table_created = true
         end
       end
+
+      private
 
       def default_keyspace
         Virsandra::Keyspace.new(Virsandra.keyspace)
