@@ -4,8 +4,13 @@ namespace :virsandra do
     desc "Migrate Cassandra up"
     task :up do
       require 'virsandra'
+      config_options = if ENV["SERVERS"]
+        {servers: ENV["SERVERS"]}
+      else
+        {}
+      end
       keyspace = if ENV["KEYSPACE"]
-        Virsandra::Keyspace.new(ENV["KEYSPACE"])
+        Virsandra::Keyspace.new(ENV["KEYSPACE"], config_options)
       end
       Virsandra::Migration.new(Dir[File.join(Rake.original_dir, "db", "migrations", "*.rb")], keyspace: keyspace).migrate_up
     end
