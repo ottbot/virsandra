@@ -4,11 +4,13 @@ module Virsandra
       :consistency,
       :keyspace,
       :servers,
+      :credentials,
     ].freeze
 
     DEFAULT_OPTION_VALUES = {
       servers: "127.0.0.1",
-      consistency: :quorum
+      consistency: :quorum,
+      credentials: {}
     }.freeze
 
     attr_accessor *OPTIONS
