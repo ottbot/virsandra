@@ -73,6 +73,14 @@ module Virsandra
       configuration.servers = value
     end
 
+    def username=(value)
+      configuration.credentials[:username] = value
+    end
+
+    def password=(value)
+      configuration.credentials[:password] = value
+    end
+
     def execute(query)
       connection.execute(query)
     end

@@ -9,6 +9,9 @@ namespace :virsandra do
       else
         {}
       end
+      if ENV['USERNAME'] && ENV['PASSWORD']
+        config_options.merge!( credentials: {username: ENV['USERNAME'], password: ENV['PASSWORD']})
+      end
       keyspace = if ENV["KEYSPACE"]
         Virsandra::Keyspace.new(ENV["KEYSPACE"], config_options)
       end

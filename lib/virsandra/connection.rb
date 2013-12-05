@@ -12,7 +12,11 @@ module Virsandra
     end
 
     def connect!
-      @handle = Cql::Client.connect(hosts: [@config.servers].flatten)
+      params = {hosts: [@config.servers].flatten}
+      if @config.credentials.any?
+        params.merge!( credentials: @config.credentials )
+      end
+      @handle = Cql::Client.connect( params )
       @handle.use(@config.keyspace)
       @handle
     end

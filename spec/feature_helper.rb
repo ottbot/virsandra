@@ -3,6 +3,8 @@ require 'spec_helper'
 module IntegrationTestHelper
   def create_keyspace
     Virsandra.keyspace = 'system'
+    Virsandra.username = TEST_USERNAME
+    Virsandra.password = TEST_PASSWORD
     Virsandra.execute("CREATE KEYSPACE #{TEST_KEYSPACE} WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 1}")
     Virsandra.reset!
   end
