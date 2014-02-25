@@ -23,7 +23,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_dependency "virtus", "~> 0.5.5"
-  gem.add_dependency "cql-rb", "~> 1.1.0.pre7"
+  gem.add_dependency "cql-rb", "~> 1.2.0"
+  gem.add_dependency "snappy", "~> 0.0.10"
 
   gem.add_development_dependency "rake", "~>10.0.4"
   gem.add_development_dependency "rspec", "~>2.13.0"

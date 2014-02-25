@@ -1,3 +1,4 @@
+require 'cql/compression/snappy_compressor'
 module Virsandra
   class Connection
 
@@ -12,7 +13,7 @@ module Virsandra
     end
 
     def connect!
-      params = {hosts: [@config.servers].flatten}
+      params = {hosts: [@config.servers].flatten,  compressor: Cql::Compression::SnappyCompressor.new}
       if @config.credentials.any?
         params.merge!( credentials: @config.credentials )
       end
