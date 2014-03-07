@@ -21,8 +21,8 @@ describe Virsandra do
 
   describe "#execute" do
     it "should be delegated to connection" do
-      connection.should_receive(:execute).with("query")
-      described_class.execute("query")
+      connection.should_receive(:execute).with("query", "consistency")
+      described_class.execute("query", "consistency")
     end
   end
 

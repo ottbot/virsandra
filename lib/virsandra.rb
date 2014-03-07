@@ -81,8 +81,8 @@ module Virsandra
       configuration.credentials[:password] = value
     end
 
-    def execute(query)
-      connection.execute(query)
+    def execute(query, consistency = nil)
+      connection.execute(query, consistency)
     end
 
     private
