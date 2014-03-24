@@ -5,7 +5,7 @@ namespace :virsandra do
     task :up do
       require 'virsandra'
       config_options = if ENV["SERVERS"]
-        {servers: ENV["SERVERS"]}
+        {servers: ENV["SERVERS"].split(",")}
       else
         {}
       end
