@@ -1,7 +1,7 @@
 module Virsandra
   module Model
 
-    include Virtus
+    include Virtus.module
 
     def self.included(base)
       super
