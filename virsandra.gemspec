@@ -12,6 +12,8 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{Easily store models defined with Virtus in Cassandra using CQL3}
   gem.homepage      = "https://github.com/ottbot/virsandra"
 
+  gem.required_ruby_version = '>= 1.9.3'
+
   gem.licenses      = ["MIT"]
   gem.files         =  Dir["{lib,vendor}/**/*"] + ["Rakefile", "README.md"]
   gem.test_files    = Dir["{spec}/**/*"]
