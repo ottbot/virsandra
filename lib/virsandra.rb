@@ -11,10 +11,10 @@ module Virsandra
 
   class << self
     def configuration
-      if Thread.current[:configuration]
-        Thread.current[:configuration]
-      elsif Thread.main[:configuration]
-        Thread.main[:configuration]
+      if Thread.current[:virsandra_configuration]
+        Thread.current[:virsandra_configuration]
+      elsif Thread.main[:virsandra_configuration]
+        Thread.main[:virsandra_configuration]
       else
         set_configuration
         configuration
@@ -28,17 +28,21 @@ module Virsandra
     def connection
       if dirty?
         disconnect!
-        Thread.current[:connection] = Virsandra::Connection.new(configuration)
+        Thread.current[:virsandra_connection] = Virsandra::Connection.new(configuration)
         configuration.accept_changes
       end
-      Thread.current[:connection]
+      Thread.current[:virsandra_connection]
+    end
+
+    def connected?
+      !!Thread.current[:virsandra_connection]
     end
 
     def disconnect!
-      if Thread.current[:connection].respond_to?(:disconnect!)
-        Thread.current[:connection].disconnect!
+      if Thread.current[:virsandra_connection].respond_to?(:disconnect!)
+        Thread.current[:virsandra_connection].disconnect!
       end
-      Thread.current[:connection] = nil
+      Thread.current[:virsandra_connection] = nil
     end
 
     def reset!
@@ -46,7 +50,7 @@ module Virsandra
     end
 
     def reset_configuration!
-      Thread.current[:configuration] = nil
+      Thread.current[:virsandra_configuration] = nil
     end
 
     def consistency
@@ -88,15 +92,15 @@ module Virsandra
     private
 
     def dirty?
-      Thread.current[:connection].nil? || configuration.changed?
+      Thread.current[:virsandra_connection].nil? || configuration.changed?
     end
 
     def set_configuration
       new_configuration = Virsandra::Configuration.new
       if Thread.current == Thread.main
-        Thread.main[:configuration] = new_configuration
+        Thread.main[:virsandra_configuration] = new_configuration
       else
-        Thread.current[:configuration] = new_configuration
+        Thread.current[:virsandra_configuration] = new_configuration
       end
     end
 

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Virsandra::Connection do
   let(:config){ Virsandra::Configuration.new(keyspace: :my_keyspace) }
-  let(:handle){ double("handle", use: nil) }
+  let(:handle){ double("handle", use: nil, close: true, ) }
   subject(:connection){ described_class.new(config) }
 
   before do
@@ -42,6 +42,14 @@ describe Virsandra::Connection do
       config.consistency = :one
       handle.should_receive(:execute).with("query", :one)
       connection.execute("query")
+    end
+
+    context "cql fails" do
+      it "re-connects and tries one more time" do
+        handle.should_receive(:execute).and_raise(Cql::NotConnectedError.new("the error"))
+        handle.should_receive(:execute).and_return("results")
+        connection.execute("query").should eq("results")
+      end
     end
   end
 end

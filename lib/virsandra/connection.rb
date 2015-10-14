@@ -23,11 +23,17 @@ module Virsandra
     end
 
     def disconnect!
-      @handle.close
+      @handle.close if @handle.respond_to?(:close)
     end
 
     def execute(query, consistency = nil)
-      @handle.execute(query, consistency || config.consistency)
+      begin
+        @handle.execute(query, consistency || config.consistency)
+      rescue Cql::NotConnectedError
+        disconnect!
+        connect!
+        @handle.execute(query, consistency || config.consistency)
+      end
     end
 
     # Delegate to CassandraCQL::Database handle
