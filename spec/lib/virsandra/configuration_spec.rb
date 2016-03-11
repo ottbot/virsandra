@@ -38,14 +38,15 @@ describe Virsandra::Configuration do
   end
 
   describe "to_hash" do
-    let(:given_options){ { credentials: {username: '', password: ''} } }
+    let(:given_options){ { credentials: {username: '', password: ''}, port: 1234 } }
 
     it "returns all options as a hash" do
       config.to_hash.should eq({
         consistency: :quorum,
         keyspace: nil,
         servers: "127.0.0.1",
-        credentials: {username: '', password: ''}
+        credentials: {username: '', password: ''},
+        port: 1234
       })
     end
   end

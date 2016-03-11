@@ -37,6 +37,25 @@ describe Virsandra::Connection do
     connection.disconnect!
   end
 
+  describe "connect!" do
+    let(:config_options) { {keyspace: :my_keyspace} }
+    let(:config) { Virsandra::Configuration.new(config_options) }
+
+    it 'uses the default config' do
+      Cql::Client.should_receive(:connect).with(hash_excluding(:port))
+      subject.connect!
+    end
+
+    context "with config port" do
+      let(:config_options) { {keyspace: :my_keyspace, port: 1234 } }
+
+      it 'passes the the port' do
+        Cql::Client.should_receive(:connect).with(hash_including(:port))
+        subject.connect!
+      end
+    end
+  end
+
   describe "#execute" do
     it "should use configuration consistency when none is given" do
       config.consistency = :one

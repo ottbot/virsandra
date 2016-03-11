@@ -17,6 +17,9 @@ module Virsandra
       if @config.credentials.any?
         params.merge!( credentials: @config.credentials )
       end
+      if !@config.port.nil?
+        params.merge!( port: @config.port )
+      end
       @handle = Cql::Client.connect( params )
       @handle.use(@config.keyspace)
       @handle
