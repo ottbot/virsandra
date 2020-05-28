@@ -5,6 +5,7 @@ module Virsandra
       :keyspace,
       :servers,
       :credentials,
+      :port,
     ].freeze
 
     DEFAULT_OPTION_VALUES = {

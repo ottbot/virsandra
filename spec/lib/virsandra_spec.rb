@@ -77,14 +77,14 @@ describe Virsandra do
   end
 
   describe "delegation to configuration" do
-    [:keyspace, :servers, :consistency, :reset!].each do |method_name|
+    [:keyspace, :servers, :consistency, :reset!, :port].each do |method_name|
       it "should deletege #{method_name} to configuration" do
         config.should_receive(method_name).any_number_of_times.and_return("value")
         described_class.send(method_name).should eq("value")
       end
     end
 
-    [:keyspace=, :servers=, :consistency=].each do |method_name|
+    [:keyspace=, :servers=, :consistency=, :port=].each do |method_name|
       it "should deletege #{method_name} to configuration" do
         config.should_receive(method_name).with("value").any_number_of_times
         described_class.send(method_name, "value")

@@ -61,6 +61,10 @@ module Virsandra
       configuration.keyspace
     end
 
+    def port
+      configuration.port
+    end
+
     def servers
       configuration.servers
     end
@@ -71,6 +75,10 @@ module Virsandra
 
     def keyspace=(value)
       configuration.keyspace = value
+    end
+
+    def port=(value)
+      configuration.port = value
     end
 
     def servers=(value)
